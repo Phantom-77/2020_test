@@ -30,7 +30,7 @@ elif 30.1 <= res <= 35:
     print(Back.MAGENTA + 'У вас ожирение I степени!')
 elif 35.1 <= res <= 40:
     print('Ваш ИМТ = ' + str(res))
-    print(Back.MAGENTA + 'У вас ожирение II степени!')
+    print(Back.RED + 'У вас ожирение II степени!')
 else:
     print('Ваш ИМТ = ' + str(res))
     print(Back.RED + 'Внимание!!! У вас ожирение III степени!')
