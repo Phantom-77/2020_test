@@ -12,7 +12,8 @@ pygame.mixer.init()
 def draw_car(x, y, number, r=255, g=255, b=255):
     """This function draws car in coordinates (x,y)
     with number (number) and color (RGB),
-    the default car color is white"""
+    the default car color is white,
+    start coordinate (x,y) - left wheel axis"""
     # Body car
     pygame.draw.rect(screen, (r, g, b), (x - 30, y - 30, 160, 30))
     pygame.draw.polygon(screen, (r, g, b), [(x, y - 30), (x + 30, y - 60),
@@ -36,13 +37,13 @@ def draw_car(x, y, number, r=255, g=255, b=255):
     pygame.draw.circle(screen, (176, 196, 222), (x + 100, y), 12, 10)
     pygame.draw.circle(screen, (0, 0, 0), (x + 100, y), 20, 2)
     pygame.draw.circle(screen, (0, 0, 0), (x + 100, y), 4)
-    print_text(number, 36, x + 45, y - 28, 0, 0, 0)
+    display_text(number, 36, x + 45, y - 28, 0, 0, 0)
 
 
 def draw_racing_lines():
     """This function draws lines START & FINISH"""
-    print_text('START', 36, 1010, 25)
-    print_text('FINISH', 36, 100, 25)
+    display_text('START', 36, 1010, 25)
+    display_text('FINISH', 36, 100, 25)
     pygame.draw.line(screen, (255, 255, 255), [1000, 0], [1000, 400], 5)
     for y in range(0, 400, 20):
         sq1 = pygame.Rect((195, y, 10, 10))
@@ -51,7 +52,7 @@ def draw_racing_lines():
         pygame.draw.rect(screen, (255, 255, 255), sq2)
 
 
-def print_text(content, f_size, x, y, r=255, g=255, b=255):
+def display_text(content, f_size, x, y, r=255, g=255, b=255):
     """This function displays text:
     'content' - the text itself, f_size - the font size in pixels,
     (x,y) - the text coordinates, (RGB) - the text color,
@@ -71,9 +72,9 @@ clock = pygame.time.Clock()
 pygame.display.set_caption('Race 2.2.1')
 pygame.mixer.music.load('car_sound.wav')
 
-print_text('Press the button to control the Car :', 22, 500, 325)
-print_text('Car 1 :  <A>   - forward;    <D>   - back', 22, 500, 350, 0, 128, 128)
-print_text('Car 2 : <Left> - forward;  <Right> - back', 22, 500, 375, 0, 128, 0)
+display_text('Press the button to control the Car :', 22, 500, 325)
+display_text('Car 1 :  <A>   - forward;    <D>   - back', 22, 500, 350, 0, 128, 128)
+display_text('Car 2 : <Left> - forward;  <Right> - back', 22, 500, 375, 0, 128, 0)
 draw_racing_lines()
 x1 = x2 = 1050   # Start position Car 1, 2
 draw_car(x1, 150, '1', 0, 128, 128)
@@ -85,7 +86,7 @@ time.sleep(3)
 A = ['3', '2', '1', 'GO!!!']
 B = [500, 500, 500, 1000]
 for n in range(len(A)):
-    print_text(A[n], 52, 610, 150)
+    display_text(A[n], 52, 610, 150)
     pygame.display.update()
     time.sleep(0.5)
     winsound.Beep(B[n], B[n])
@@ -101,7 +102,7 @@ while 1:
             sys.exit()
 
     screen.fill(BLACK)
-    print_text('Press <A>, <D> - car 1   <Left>, <Right> - car 2', 20, 470, 370)
+    display_text('Press <A>, <D> - car 1   <Left>, <Right> - car 2', 20, 470, 370)
     draw_racing_lines()
     draw_car(x1, 150, '1', 0, 128, 128)
     draw_car(x2, 300, '2', 0, 128, 0)
@@ -121,15 +122,15 @@ while 1:
             x2 += 5
 
     elif x1 <= 150 < x2:
-        print_text('Car 1 - WINNER!!!', 36, 510, 150, 0, 128, 128)
+        display_text('Car 1 - WINNER!!!', 36, 510, 150, 0, 128, 128)
         pygame.display.update()
         pygame.mixer.music.stop()
     elif x2 <= 150 < x1:
-        print_text('Car 2 - WINNER!!!', 36, 510, 150, 0, 128, 0)
+        display_text('Car 2 - WINNER!!!', 36, 510, 150, 0, 128, 0)
         pygame.display.update()
         pygame.mixer.music.stop()
     else:
-        print_text('Draw - no winner', 36, 510, 150)
+        display_text('Draw - no winner', 36, 510, 150)
         pygame.display.update()
         pygame.mixer.music.stop()
 
