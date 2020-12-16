@@ -1,7 +1,6 @@
-# This is the "Race 2.2.1" program, where 2 cars driven by two players
+# This is the "Race 2.2.2" program, where 2 cars driven by two players
 import pygame
 import sys
-import time
 import winsound
 from random import randint
 
@@ -62,13 +61,40 @@ def display_text(content, f_size, x, y, r=255, g=255, b=255):
     screen.blit(text, (x, y))
 
 
+def race_result(start_t, car1, car2):
+    t_car1 = car1 - start_t
+    t_car2 = car2 - start_t
+    if t_car1 < t_car2:
+        display_text('Car 1 - WINNER!!!', 36, 510, 150, 0, 128, 128)
+        print('Car 1 - WINNER!!!')
+        print('Time Car 1 :', t_car1)
+        print('Time Car 2 :', t_car2)
+        pygame.display.update()
+        pygame.time.delay(1000)
+    elif t_car1 > t_car2:
+        display_text('Car 2 - WINNER!!!', 36, 510, 150, 0, 128, 0)
+        print('Car 2 - WINNER!!!')
+        print('Time Car 2 :', t_car2)
+        print('Time Car 1 :', t_car1)
+        pygame.display.update()
+        pygame.time.delay(1000)
+    else:
+        display_text('Draw - no winner', 36, 510, 150)
+        print('Draw!')
+        print('Time Car 1 :', t_car1)
+        print('Time Car 2 :', t_car2)
+        pygame.display.update()
+        pygame.time.delay(1000)
+
+
 def game_over():
     pygame.mixer.music.stop()
-    time.sleep(3)
     screen.fill(BLACK)
     display_text('GAME OVER', 36, 510, 150)
     pygame.display.update()
-    time.sleep(2)
+    pygame.time.delay(1500)
+    game_end = True
+    return game_end
 
 
 FPS = 30
@@ -78,7 +104,7 @@ BLACK = (0, 0, 0)
 # Create window and load sound
 screen = pygame.display.set_mode(SIZE)
 clock = pygame.time.Clock()
-pygame.display.set_caption('Race 2.2.1')
+pygame.display.set_caption('Race 2.2.2')
 pygame.mixer.music.load('car_sound.wav')
 
 display_text('Press the button to control the Car :', 22, 500, 325)
@@ -89,7 +115,7 @@ x1 = x2 = 1050   # Start position Car 1, 2
 draw_car(x1, 150, '1', 0, 128, 128)
 draw_car(x2, 300, '2', 0, 128, 0)
 pygame.display.update()
-time.sleep(3)
+pygame.time.delay(3000)
 
 # Countdown
 A = ['3', '2', '1', 'GO!!!']
@@ -97,11 +123,14 @@ B = [500, 500, 500, 1000]
 for n in range(len(A)):
     display_text(A[n], 52, 610, 150)
     pygame.display.update()
-    time.sleep(0.5)
+    pygame.time.delay(500)
     winsound.Beep(B[n], B[n])
     pygame.draw.rect(screen, (0, 0, 0), (600, 135, 110, 60))
 
 pygame.mixer.music.play(-1)
+start_time = pygame.time.get_ticks()
+t1 = 0
+t2 = 0
 
 finish = False
 while not finish:
@@ -117,10 +146,9 @@ while not finish:
     draw_car(x1, 150, '1', 0, 128, 128)
     draw_car(x2, 300, '2', 0, 128, 0)
     pygame.display.update()
-
     keys = pygame.key.get_pressed()
 
-    if x1 > 150 and x2 > 150:
+    if x1 > 150 or x2 > 150:
         if keys[pygame.K_a]:
             x1 -= randint(2, 5)
         elif keys[pygame.K_d]:
@@ -131,20 +159,15 @@ while not finish:
         elif keys[pygame.K_RIGHT]:
             x2 += 5
 
-    elif x1 <= 150 < x2:
-        display_text('Car 1 - WINNER!!!', 36, 510, 150, 0, 128, 128)
-        pygame.display.update()
+    if x1 <= 150:
+        t1 = pygame.time.get_ticks()
+
+    if x2 <= 150:
+        t2 = pygame.time.get_ticks()
+
+    if x1 and x2 <= 150:
+        race_result(start_time, t1, t2)
         game_over()
-        finish = True
-    elif x2 <= 150 < x1:
-        display_text('Car 2 - WINNER!!!', 36, 510, 150, 0, 128, 0)
-        pygame.display.update()
-        game_over()
-        finish = True
-    else:
-        display_text('Draw - no winner', 36, 510, 150)
-        pygame.display.update()
-        game_over()
-        finish = True
+        finish = game_over()
 
     clock.tick(FPS)
