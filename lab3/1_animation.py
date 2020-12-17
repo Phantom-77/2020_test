@@ -1,4 +1,4 @@
-# This is the "Race 2.2.15" program, where 2 cars driven by two players
+# This is the "Race 2.2.16" program, where 2 cars driven by two players
 import pygame
 import sys
 import winsound
@@ -41,14 +41,25 @@ def draw_car(x, y, number, r=255, g=255, b=255):
 
 def draw_racing_lines():
     """This function draws lines START & FINISH"""
-    display_text('START', 36, 1010, 25)
-    display_text('FINISH', 36, 100, 25)
-    pygame.draw.line(screen, (255, 255, 255), [1000, 0], [1000, 400], 5)
+    display_text('START', 36, 1020, 25)
+    display_text('FINISH', 36, 90, 25)
+    pygame.draw.line(screen, (255, 255, 255), [1010, 0], [1010, 400], 5)
     for y in range(0, 400, 20):
-        sq1 = pygame.Rect((195, y, 10, 10))
-        sq2 = pygame.Rect((205, y + 10, 10, 10))
+        sq1 = pygame.Rect((185, y, 10, 10))
+        sq2 = pygame.Rect((195, y + 10, 10, 10))
         pygame.draw.rect(screen, (255, 255, 255), sq1)
         pygame.draw.rect(screen, (255, 255, 255), sq2)
+
+
+def draw_finish_flag(x, y):
+    """This function draws Finish Flag 120x60,
+    (x,y) - flag center coordinates"""
+    pygame.draw.rect(screen, (255, 255, 255), (x - 60, y - 30, 30, 30))
+    pygame.draw.rect(screen, (255, 255, 255), (x - 30, y, 30, 30))
+    pygame.draw.rect(screen, (255, 255, 255), (x, y - 30, 30, 30))
+    pygame.draw.rect(screen, (255, 255, 255), (x + 30, y, 30, 30))
+    pygame.draw.rect(screen, (255, 255, 255), (x - 61, y - 31, 122, 62), 1)
+    pygame.display.update()
 
 
 def display_text(content, f_size, x, y, r=255, g=255, b=255):
@@ -97,7 +108,7 @@ BLACK = (0, 0, 0)
 # Create window and load sound
 screen = pygame.display.set_mode(SIZE)
 clock = pygame.time.Clock()
-pygame.display.set_caption('Race 2.2.15')
+pygame.display.set_caption('Race 2.2.16')
 pygame.mixer.music.load('car_sound.wav')
 
 # Draw the starting position
@@ -105,9 +116,9 @@ draw_racing_lines()
 x1 = x2 = 1050   # Start position Car 1, 2
 draw_car(x1, 150, '1', 0, 128, 128)
 draw_car(x2, 300, '2', 0, 128, 0)
-display_text('Press the button to control the Car :', 22, 490, 325)
-display_text('Car 1 :  <A>   - forward;    <D>   - back', 22, 485, 350, 0, 128, 128)
-display_text('Car 2 : <Left> - forward;  <Right> - back', 22, 480, 375, 0, 128, 0)
+display_text('Press the button to control the Car :', 22, 480, 325)
+display_text('Car 1 :  <A>   - forward;    <D>   - back', 22, 475, 350, 0, 128, 128)
+display_text('Car 2 : <Left> - forward;  <Right> - back', 22, 470, 375, 0, 128, 0)
 pygame.display.update()
 pygame.time.delay(1500)
 
@@ -115,17 +126,16 @@ pygame.time.delay(1500)
 A = ['3', '2', '1', 'GO!!!']
 B = [500, 500, 500, 1000]
 for n in range(len(A)):
-    display_text(A[n], 52, 610, 150)
+    display_text(A[n], 52, 590, 150)
     pygame.display.update()
     pygame.time.delay(500)
     winsound.Beep(B[n], B[n])
-    pygame.draw.rect(screen, (0, 0, 0), (600, 135, 110, 60))
+    pygame.draw.rect(screen, (0, 0, 0), (580, 135, 110, 60))
 
 # Start race
 pygame.mixer.music.play(-1)
 time_start = pygame.time.get_ticks()
-C = []  # empty list for recording time car1
-D = []  # empty list for recording time car2
+C = []  # empty list for recording time leader
 
 # Main loop
 finish = False
@@ -137,7 +147,7 @@ while not finish:
             sys.exit()
 
     screen.fill(BLACK)
-    display_text('Press <A>, <D> - car 1   <Left>, <Right> - car 2', 20, 470, 370)
+    display_text('Press <A>, <D> - car 1   <Left>, <Right> - car 2', 20, 460, 370)
     draw_racing_lines()
     draw_car(x1, 150, '1', 0, 128, 128)
     draw_car(x2, 300, '2', 0, 128, 0)
@@ -145,7 +155,7 @@ while not finish:
 
     keys = pygame.key.get_pressed()
 
-    if x1 > 60 and x2 > 60:
+    if x1 > 50 and x2 > 50:
         if keys[pygame.K_a]:
             x1 -= randint(2, 5)
         elif keys[pygame.K_d]:
@@ -156,21 +166,22 @@ while not finish:
         elif keys[pygame.K_RIGHT]:
             x2 += 5
 
-    elif x1 <= 60 and x2 <= 60:
-        x1 = 60
-        x2 = 60
+    elif x1 <= 50 and x2 <= 50:
+        x1 = x2 = 50
         time_car1 = pygame.time.get_ticks() - time_start
         time_car2 = pygame.time.get_ticks() - time_start
-        display_text('Draw - no winner', 36, 510, 150)
-        display_text('#1 Car1   ' + convert_time(time_car1), 24, 545, 200, 0, 128, 128)
-        display_text('#1 Car2   ' + convert_time(time_car2), 24, 545, 220, 0, 128, 0)
+        draw_finish_flag(600, 200)
+        display_text('Draw - no winner', 36, 490, 250)
+        display_text('#1 Car1   ' + convert_time(time_car1), 24, 530, 300, 0, 128, 128)
+        display_text('#1 Car2   ' + convert_time(time_car2), 24, 530, 320, 0, 128, 0)
         pygame.display.update()
         game_over()
         finish = True
 
-    elif x1 <= 60 and x2 > 60:
-        x1 = 60
+    elif x1 <= 50 < x2:
+        x1 = 50
         time_car1 = pygame.time.get_ticks() - time_start
+        draw_finish_flag(600, 200)
         C.append(time_car1)
         sp1 = len(C)
         if sp1 >= 2:
@@ -181,35 +192,36 @@ while not finish:
         elif keys[pygame.K_RIGHT]:
             x2 += 5
 
-        if x2 <= 60:
-            x2 = 60
+        if x2 <= 50:
+            x2 = 50
             time_car2 = pygame.time.get_ticks() - time_start
-            display_text('Car 1 - WINNER!!!', 36, 520, 150, 0, 128, 128)
-            display_text('#1 Car1   ' + convert_time(C[0]), 24, 545, 200, 0, 128, 128)
-            display_text('#2 Car2   ' + convert_time(time_car2), 24, 545, 220, 0, 128, 0)
+            display_text('Car 1 - WINNER!!!', 36, 490, 250, 0, 128, 128)
+            display_text('#1 Car1   ' + convert_time(C[0]), 24, 530, 300, 0, 128, 128)
+            display_text('#2 Car2   ' + convert_time(time_car2), 24, 530, 320, 0, 128, 0)
             pygame.display.update()
             game_over()
             finish = True
 
-    elif x2 <= 60 and x1 > 60:
-        x2 = 60
+    elif x2 <= 50 < x1:
+        x2 = 50
         time_car2 = pygame.time.get_ticks() - time_start
-        D.append(time_car2)
-        sp2 = len(D)
+        draw_finish_flag(600, 200)
+        C.append(time_car2)
+        sp2 = len(C)
         if sp2 >= 2:
-            del D[1]
+            del C[1]
 
         if keys[pygame.K_a]:
             x1 -= randint(2, 5)
         elif keys[pygame.K_d]:
             x1 += 5
 
-        if x1 <= 60:
-            x1 = 60
+        if x1 <= 50:
+            x1 = 50
             time_car1 = pygame.time.get_ticks() - time_start
-            display_text('Car 2 - WINNER!!!', 36, 520, 150, 0, 128, 0)
-            display_text('#1 Car2   ' + convert_time(D[0]), 24, 545, 200, 0, 128, 0)
-            display_text('#2 Car1   ' + convert_time(time_car1), 24, 545, 220, 0, 128, 128)
+            display_text('Car 2 - WINNER!!!', 36, 490, 250, 0, 128, 0)
+            display_text('#1 Car2   ' + convert_time(C[0]), 24, 530, 300, 0, 128, 0)
+            display_text('#2 Car1   ' + convert_time(time_car1), 24, 530, 320, 0, 128, 128)
             pygame.display.update()
             game_over()
             finish = True
