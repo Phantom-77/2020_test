@@ -208,7 +208,7 @@ def game_over():
 # Create window and load sound
 screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption('Race 2.3')
-pygame.mixer.music.load('car_sound.wav')
+pygame.mixer.music.load('race_2_sound.wav')
 clock = pygame.time.Clock()
 
 # Help to control car
