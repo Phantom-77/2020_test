@@ -90,31 +90,8 @@ def convert_time(ticks):
     return result
 
 
-def game_over():
-    """This function stops and unloads the music
-    and displays 'Game over' with a delay"""
-    pygame.mixer.music.stop()
-    pygame.mixer.music.unload()
-    pygame.time.delay(3000)
-    screen.fill(BLACK)
-    display_text('GAME OVER', 36, 520, 170)
-    # display_text('Press the "Q" button to exit', 22, 520, 230)
-    pygame.display.update()
-    pygame.time.delay(500)
-    finish = True
-    # keys1 = pygame.key.get_pressed()
-    # end = False
-    # if keys1[pygame.K_q]:
-    #     end = True
-    # return end
-    return finish
-
-
-def main_loop(start_position):
-    c = []  # empty list for recording time leader
-    x1 = x2 = start_position
-
-    # Countdown before the start
+def countdown():
+    """This function counts down on the screen and beeps"""
     score = ['3', '2', '1', 'GO!']
     b = [500, 500, 500, 1000]
     for n in range(len(score)):
@@ -123,9 +100,54 @@ def main_loop(start_position):
         pygame.time.delay(500)
         winsound.Beep(b[n], b[n])
         pygame.draw.rect(screen, BLACK, (580, 135, 110, 60))
+
+
+def show_help_control():
+    """This function shows on-screen help in control"""
+    display_text('Control :', 24, 850, 50)
+    display_text('Car 1 :', 22, 850, 90, TEAL)
+    display_text('A - forward', 22, 850, 110, TEAL)
+    display_text('D - back', 22, 850, 130, TEAL)
+    display_text('Car 2 :', 22, 850, 240, GREEN)
+    display_text('Left - forward', 22, 850, 260, GREEN)
+    display_text('Right - back', 22, 850, 280, GREEN)
+    draw_racing_lines()
+    draw_car(1050, 150, '1', TEAL)
+    draw_car(1050, 300, '2', GREEN)
+    pygame.display.update()
+    pygame.time.delay(1500)
+
+
+def game_over():
+    """This function stops and unloads the music
+    and return end=True"""
+    pygame.mixer.music.stop()
+    pygame.mixer.music.unload()
+    pygame.time.delay(3000)
+    screen.fill(BLACK)
+    display_text('GAME OVER', 36, 520, 170)
+    pygame.display.update()
+    end = True
+    return end
+
+
+def print_result(winner, time_1st, time_2sd, first=' ', second=' '):
+    file = open('race2_result_log.txt', 'a', -1, 'utf-8')
+    tc1 = convert_time(time_1st)
+    tc2 = convert_time(time_2sd)
+    file.write('Результат гонки: ' + winner + '\n')
+    file.write('1-ое место: ' + tc1 + ' - ' + first + '\n')
+    file.write('2-ое место: ' + tc2 + ' - ' + second + '\n')
+    file.write('----------\n')
+    # f.write(result.decode('cp866'))
+    file.close()
+
+
+def main_loop(start_position):
+    c = []  # empty list for recording time leader
+    x1 = x2 = start_position
     pygame.mixer.music.play(-1)
     time_start = pygame.time.get_ticks()
-
     finish = False
     while not finish:
         clock.tick(FPS)
@@ -136,7 +158,6 @@ def main_loop(start_position):
                 sys.exit()
 
         screen.fill(BLACK)
-        display_text('Press <A>, <D> - car 1   <Left>, <Right> - car 2', 20, 460, 370)
         draw_racing_lines()
         draw_car(x1, 150, '1', TEAL)
         draw_car(x2, 300, '2', GREEN)
@@ -161,10 +182,10 @@ def main_loop(start_position):
             time_car2 = pygame.time.get_ticks() - time_start
             draw_finish_flag(600, 200)
             display_text('Draw - no winner', 36, 490, 250)
-            display_text('#1 Car1   ' + convert_time(time_car1), 24, 525, 300, TEAL)
-            display_text('#1 Car2   ' + convert_time(time_car2), 24, 525, 320, GREEN)
-            # display_text('Press the "Q" button to exit', 22, 520, 370)
+            display_text('1 - Car1   ' + convert_time(time_car1), 24, 525, 300, TEAL)
+            display_text('1 - Car2   ' + convert_time(time_car2), 24, 525, 320, GREEN)
             pygame.display.update()
+            print_result('Draw - no winner', time_car1, time_car2)
             game_over()
             finish = game_over()
 
@@ -186,10 +207,10 @@ def main_loop(start_position):
                 x2 = 50
                 time_car2 = pygame.time.get_ticks() - time_start
                 display_text('Car 1 - WINNER!!!', 36, 490, 250, TEAL)
-                display_text('#1 Car1   ' + convert_time(c[0]), 24, 525, 300, TEAL)
-                display_text('#2 Car2   ' + convert_time(time_car2), 24, 525, 320, GREEN)
-                # display_text('Press the "Q" button to exit', 22, 520, 370)
+                display_text('1 - Car1   ' + convert_time(c[0]), 24, 525, 300, TEAL)
+                display_text('2 - Car2   ' + convert_time(time_car2), 24, 525, 320, GREEN)
                 pygame.display.update()
+                print_result('Car 1 - WINNER!', c[0], time_car2, 'Car1', 'Car2')
                 game_over()
                 finish = game_over()
 
@@ -211,20 +232,12 @@ def main_loop(start_position):
                 x1 = 50
                 time_car1 = pygame.time.get_ticks() - time_start
                 display_text('Car 2 - WINNER!!!', 36, 490, 250, GREEN)
-                display_text('#1 Car2   ' + convert_time(c[0]), 24, 525, 300, GREEN)
-                display_text('#2 Car1   ' + convert_time(time_car1), 24, 525, 320, TEAL)
-                # display_text('Press the "Q" button to exit', 22, 520, 370)
+                display_text('1 - Car2   ' + convert_time(c[0]), 24, 525, 300, GREEN)
+                display_text('2 - Car1   ' + convert_time(time_car1), 24, 525, 320, TEAL)
                 pygame.display.update()
+                print_result('Car 2 - WINNER!', c[0], time_car1, 'Car2', 'Car1')
                 game_over()
                 finish = game_over()
-        # if keys[pygame.K_q]:
-        #     pygame.mixer.music.stop()
-        #     pygame.mixer.music.unload()
-        #     screen.fill(BLACK)
-        #     display_text('GAME OVER', 36, 520, 170)
-        #     pygame.display.update()
-        #     pygame.time.delay(500)
-        #     finish = True
 
 
 # Create window and load sound
@@ -233,14 +246,6 @@ pygame.display.set_caption('Race 2.3.1')
 pygame.mixer.music.load('race2_sound.wav')
 clock = pygame.time.Clock()
 
-# Help to control car
-display_text('Control :', 24, 585, 320)
-display_text('Car 1 :  <A>   - forward;    <D>   - back', 22, 475, 350, TEAL)
-display_text('Car 2 : <Left> - forward;  <Right> - back', 22, 470, 375, GREEN)
-
-draw_racing_lines()
-draw_car(1050, 150, '1', TEAL)
-draw_car(1050, 300, '2', GREEN)
-pygame.display.update()
-pygame.time.delay(1500)
+show_help_control()
+countdown()
 main_loop(1050)
