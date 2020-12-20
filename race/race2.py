@@ -2,6 +2,7 @@
 import pygame
 import sys
 import winsound
+from datetime import datetime
 from random import randint
 
 pygame.init()
@@ -115,7 +116,7 @@ def show_help_control():
     draw_car(1050, 150, '1', TEAL)
     draw_car(1050, 300, '2', GREEN)
     pygame.display.update()
-    pygame.time.delay(1500)
+    pygame.time.wait(1500)
 
 
 def game_over():
@@ -123,7 +124,7 @@ def game_over():
     and return end=True"""
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
-    pygame.time.delay(3000)
+    pygame.time.wait(3000)
     screen.fill(BLACK)
     display_text('GAME OVER', 36, 520, 170)
     pygame.display.update()
@@ -131,21 +132,20 @@ def game_over():
     return end
 
 
-def print_result(winner, time_1st, time_2sd, first=' ', second=' '):
-    file = open('race2_result_log.txt', 'a', -1, 'utf-8')
-    tc1 = convert_time(time_1st)
-    tc2 = convert_time(time_2sd)
-    file.write('Результат гонки: ' + winner + '\n')
-    file.write('1-ое место: ' + tc1 + ' - ' + first + '\n')
-    file.write('2-ое место: ' + tc2 + ' - ' + second + '\n')
+def print_result(winner, time_1st, time_2nd, first=' ', second=' '):
+    date = datetime.now()
+    file = open('race2_result.txt', 'a', -1, 'utf-8')
+    file.write(str(date) + '\n')
+    file.write(' Race result: ' + winner + '\n')
+    file.write('1 place: ' + convert_time(time_1st) + ' - ' + first + '\n')
+    file.write('2 place: ' + convert_time(time_2nd) + ' - ' + second + '\n')
     file.write('----------\n')
-    # f.write(result.decode('cp866'))
     file.close()
 
 
-def main_loop(start_position):
+def main_loop():
     c = []  # empty list for recording time leader
-    x1 = x2 = start_position
+    x1 = x2 = 1050  # Start position
     pygame.mixer.music.play(-1)
     time_start = pygame.time.get_ticks()
     finish = False
@@ -210,7 +210,7 @@ def main_loop(start_position):
                 display_text('1 - Car1   ' + convert_time(c[0]), 24, 525, 300, TEAL)
                 display_text('2 - Car2   ' + convert_time(time_car2), 24, 525, 320, GREEN)
                 pygame.display.update()
-                print_result('Car 1 - WINNER!', c[0], time_car2, 'Car1', 'Car2')
+                print_result('Car 1 - win!', c[0], time_car2, 'Car1', 'Car2')
                 game_over()
                 finish = game_over()
 
@@ -235,7 +235,7 @@ def main_loop(start_position):
                 display_text('1 - Car2   ' + convert_time(c[0]), 24, 525, 300, GREEN)
                 display_text('2 - Car1   ' + convert_time(time_car1), 24, 525, 320, TEAL)
                 pygame.display.update()
-                print_result('Car 2 - WINNER!', c[0], time_car1, 'Car2', 'Car1')
+                print_result('Car 2 - win!', c[0], time_car1, 'Car2', 'Car1')
                 game_over()
                 finish = game_over()
 
@@ -248,4 +248,4 @@ clock = pygame.time.Clock()
 
 show_help_control()
 countdown()
-main_loop(1050)
+main_loop()
