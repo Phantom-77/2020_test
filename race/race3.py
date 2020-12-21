@@ -29,11 +29,14 @@ def convert_time(ticks):
 
 def countdown():
     """This function counts down on the screen and beeps"""
-    screen.fill(BLACK)
+    pygame.mixer.music.stop()
     draw_racing_lines()
     draw_car(1050, 150, '1', TEAL)
     draw_car(1050, 300, '2', GREEN)
     pygame.display.update()
+    pygame.mixer.music.load('sounds/start.wav')
+    pygame.mixer.music.play(-1)
+    pygame.time.wait(2000)
     score = ['3', '2', '1', 'GO!']
     b = [500, 500, 500, 1000]
     for n in range(len(score)):
@@ -112,6 +115,7 @@ def race():
     c1 = []  # empty list for recording time car1
     c2 = []  # empty list for recording time car2
     x1 = x2 = 1050  # Start position
+    pygame.mixer.music.load('sounds/sound2.wav')
     pygame.mixer.music.play(-1)
     time_start = pygame.time.get_ticks()
     end = False
@@ -224,14 +228,15 @@ def start_screen():
 # Create window and load sound
 screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption('Race 3.0.1')
-pygame.mixer.music.load('race3_sound.wav')
+pygame.mixer.music.load('sounds/menu.wav')
+pygame.mixer.music.play(-1)
 clock = pygame.time.Clock()
-start_screen()
 
 # Main loop
 finish = False
 while not finish:
     clock.tick(FPS)
+    start_screen()
     for i in pygame.event.get():
         if i.type == pygame.QUIT:
             pygame.mixer.music.stop()
@@ -242,6 +247,8 @@ while not finish:
         screen.fill(BLACK)
         countdown()
         race()
+        pygame.mixer.music.load('sounds/menu.wav')
+        pygame.mixer.music.play(-1)
         start_screen()
     if keys[pygame.K_q]:
         pygame.mixer.music.stop()
