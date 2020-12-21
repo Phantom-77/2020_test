@@ -243,7 +243,7 @@ def main_loop():
 # Create window and load sound
 screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption('Race 2.3.1')
-pygame.mixer.music.load('race2_sound.wav')
+pygame.mixer.music.load('race_sound.wav')
 clock = pygame.time.Clock()
 
 show_help_control()
