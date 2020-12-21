@@ -16,6 +16,44 @@ TEAL = (0, 128, 128)
 GREEN = (0, 128, 0)
 
 
+def convert_time(ticks):
+    """This function converts the received
+    milliseconds to time format MM:SS.mmm"""
+    millis = int(ticks % 1000)
+    seconds = int((ticks/1000) % 60)
+    minutes = int(ticks/(1000*60)) % 60
+    # hours = int((ticks/(1000*60*60)) % 24a)
+    res = '{min:02d}:{sec:02d}.{mil:03d}'.format(min=minutes, sec=seconds, mil=millis)
+    return res
+
+
+def countdown():
+    """This function counts down on the screen and beeps"""
+    screen.fill(BLACK)
+    draw_racing_lines()
+    draw_car(1050, 150, '1', TEAL)
+    draw_car(1050, 300, '2', GREEN)
+    pygame.display.update()
+    score = ['3', '2', '1', 'GO!']
+    b = [500, 500, 500, 1000]
+    for n in range(len(score)):
+        display_text(score[n], 52, 590, 150)
+        pygame.display.update()
+        pygame.time.wait(500)
+        winsound.Beep(b[n], b[n])
+        pygame.draw.rect(screen, BLACK, (580, 135, 110, 60))
+
+
+def display_text(content, f_size, x, y, color=WHITE):
+    """This function displays text:
+    'content' - the text itself, f_size - the font size in pixels,
+    (x,y) - the text coordinates, (RGB) - the text color,
+    the default text color is white"""
+    ft = pygame.font.Font(None, f_size)
+    text = ft.render(content, True, color)
+    screen.blit(text, (x, y))
+
+
 def draw_car(x, y, number, color=WHITE):
     """This function draws car in coordinates (x,y)
     with number (number) and color (RGB),
@@ -68,102 +106,6 @@ def draw_finish_flag(x, y):
     pygame.draw.rect(screen, WHITE, (x + 30, y, 30, 30))
     pygame.draw.rect(screen, WHITE, (x - 61, y - 31, 122, 62), 1)
     pygame.display.update()
-
-
-def display_text(content, f_size, x, y, color=WHITE):
-    """This function displays text:
-    'content' - the text itself, f_size - the font size in pixels,
-    (x,y) - the text coordinates, (RGB) - the text color,
-    the default text color is white"""
-    ft = pygame.font.Font(None, f_size)
-    text = ft.render(content, True, color)
-    screen.blit(text, (x, y))
-
-
-def convert_time(ticks):
-    """This function converts the received
-    milliseconds to time format MM:SS.mmm"""
-    millis = int(ticks % 1000)
-    seconds = int((ticks/1000) % 60)
-    minutes = int(ticks/(1000*60)) % 60
-    # hours = int((ticks/(1000*60*60)) % 24a)
-    res = '{min:02d}:{sec:02d}.{mil:03d}'.format(min=minutes, sec=seconds, mil=millis)
-    return res
-
-
-def countdown():
-    """This function counts down on the screen and beeps"""
-    screen.fill(BLACK)
-    draw_racing_lines()
-    draw_car(1050, 150, '1', TEAL)
-    draw_car(1050, 300, '2', GREEN)
-    pygame.display.update()
-    score = ['3', '2', '1', 'GO!']
-    b = [500, 500, 500, 1000]
-    for n in range(len(score)):
-        display_text(score[n], 52, 590, 150)
-        pygame.display.update()
-        pygame.time.wait(500)
-        winsound.Beep(b[n], b[n])
-        pygame.draw.rect(screen, BLACK, (580, 135, 110, 60))
-
-
-def start_screen():
-    """This function shows on-screen help in control"""
-    screen.fill(BLACK)
-    draw_car(250, 300, '1', TEAL)
-    draw_car(850, 300, '2', GREEN)
-    display_text('RACE 3', 36, 555, 50)
-    display_text('Press SPACE - for start race', 22, 500, 110)
-    display_text('Press Q - for quit game', 22, 515, 140)
-    display_text('Car 1 :', 22, 250, 150, TEAL)
-    display_text('A - forward', 22, 250, 170, TEAL)
-    display_text('D - back', 22, 250, 190, TEAL)
-    display_text('Car 2 :', 22, 850, 150, GREEN)
-    display_text('Left - forward', 22, 850, 170, GREEN)
-    display_text('Right - back', 22, 850, 190, GREEN)
-    pygame.display.update()
-
-
-def result(time_car1, time_car2):
-    """This function determines the winner of the race
-    by comparing the time Car1 and Car2"""
-    t1 = time_car1
-    t2 = time_car2
-    tc1 = convert_time(t1)
-    tc2 = convert_time(t2)
-    if t1 < t2:
-        display_text('Win Car 1', 24, 555, 260, TEAL)
-        display_text('1- Car1  ' + tc1, 24, 525, 300, TEAL)
-        display_text('2- Car2  ' + tc2, 24, 525, 320, GREEN)
-        pygame.display.update()
-        recording_results('Win Car1', tc1, tc2, 'Car1', 'Car2')
-    elif t1 > t2:
-        display_text('Win Car 2!', 24, 555, 260, GREEN)
-        display_text('1- Car2  ' + tc2, 24, 525, 300, GREEN)
-        display_text('2- Car1  ' + tc1, 24, 525, 320, TEAL)
-        pygame.display.update()
-        recording_results('Win Car2!', tc2, tc1, 'Car2', 'Car1')
-    else:
-        print('Draw')
-        display_text('Draw', 24, 560, 260)
-        display_text('Car1  ' + tc1, 24, 525, 300, TEAL)
-        display_text('Car2  ' + tc2, 24, 525, 320, GREEN)
-        pygame.display.update()
-        recording_results('Draw', tc1, tc2)
-
-
-def recording_results(win, t1, t2, first=' ', second=' '):
-    """This function writes the race result
-    to a file race3_result.txt"""
-    date = datetime.now()
-    file = open('race3_result.txt', 'a', -1, 'utf-8')
-    file.write(str(date) + '\n')
-    file.write('Race result: ' + win + '\n')
-    file.write('1 place: ' + t1 + ' - ' + first + '\n')
-    file.write('2 place: ' + t2 + ' - ' + second + '\n')
-    file.write('----------\n')
-    file.close()
 
 
 def race():
@@ -221,6 +163,64 @@ def race():
             end = True
 
 
+def result(time_car1, time_car2):
+    """This function determines the winner of the race
+    by comparing the time Car1 and Car2"""
+    t1 = time_car1
+    t2 = time_car2
+    tc1 = convert_time(t1)
+    tc2 = convert_time(t2)
+    if t1 < t2:
+        display_text('Win Car 1', 24, 555, 260, TEAL)
+        display_text('1 place - Car1  ' + tc1, 24, 500, 300, TEAL)
+        display_text('2 place - Car2  ' + tc2, 24, 500, 320, GREEN)
+        pygame.display.update()
+        result_recording('Win Car1', tc1, tc2, 'Car1', 'Car2')
+    elif t1 > t2:
+        display_text('Win Car 2', 24, 555, 260, GREEN)
+        display_text('1 place - Car2  ' + tc2, 24, 500, 300, GREEN)
+        display_text('2 place - Car1  ' + tc1, 24, 500, 320, TEAL)
+        pygame.display.update()
+        result_recording('Win Car2!', tc2, tc1, 'Car2', 'Car1')
+    else:
+        print('Draw')
+        display_text('Draw', 24, 560, 260)
+        display_text('Car1  ' + tc1, 24, 525, 300, TEAL)
+        display_text('Car2  ' + tc2, 24, 525, 320, GREEN)
+        pygame.display.update()
+        result_recording('Draw', tc1, tc2)
+
+
+def result_recording(win, t1, t2, first=' ', second=' '):
+    """This function writes the race result
+    to a file race3_result.txt"""
+    date = datetime.now()
+    file = open('race3_result.txt', 'a', -1, 'utf-8')
+    file.write(str(date) + '\n')
+    file.write('Race result: ' + win + '\n')
+    file.write('1 place: ' + t1 + ' - ' + first + '\n')
+    file.write('2 place: ' + t2 + ' - ' + second + '\n')
+    file.write('----------\n')
+    file.close()
+
+
+def start_screen():
+    """This function shows on-screen help in control"""
+    screen.fill(BLACK)
+    draw_car(250, 300, '1', TEAL)
+    draw_car(850, 300, '2', GREEN)
+    display_text('RACE 3', 36, 555, 50)
+    display_text('Press SPACE - for start race', 22, 500, 110)
+    display_text('Press Q - for quit game', 22, 515, 140)
+    display_text('Car 1 :', 22, 250, 150, TEAL)
+    display_text('A - forward', 22, 250, 170, TEAL)
+    display_text('D - back', 22, 250, 190, TEAL)
+    display_text('Car 2 :', 22, 850, 150, GREEN)
+    display_text('Left - forward', 22, 850, 170, GREEN)
+    display_text('Right - back', 22, 850, 190, GREEN)
+    pygame.display.update()
+
+
 # Create window and load sound
 screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption('Race 3.0.1')
@@ -237,15 +237,14 @@ while not finish:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
             sys.exit()
-
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
         screen.fill(BLACK)
         countdown()
         race()
         start_screen()
-
     if keys[pygame.K_q]:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
         finish = True
+pygame.quit()
