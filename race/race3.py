@@ -1,4 +1,4 @@
-# This is the "Race 3.0.1" program, where 2 cars driven by two players
+# This is the "Race 3.0.2" program, where 2 cars driven by two players
 import pygame
 import sys
 import winsound
@@ -181,15 +181,14 @@ def result(time_car1, time_car2):
         display_text('1 place - Car1  ' + tc1, 24, 500, 300, TEAL)
         display_text('2 place - Car2  ' + tc2, 24, 500, 320, GREEN)
         pygame.display.update()
-        result_recording('Win Car1', tc1, tc2, 'Car1', 'Car2')
+        result_recording('Win_Car1', tc1, tc2, 'Car1', 'Car2')
     elif t1 > t2:
         display_text('Win Car 2', 24, 555, 260, GREEN)
         display_text('1 place - Car2  ' + tc2, 24, 500, 300, GREEN)
         display_text('2 place - Car1  ' + tc1, 24, 500, 320, TEAL)
         pygame.display.update()
-        result_recording('Win Car2', tc2, tc1, 'Car2', 'Car1')
+        result_recording('Win_Car2', tc2, tc1, 'Car2', 'Car1')
     else:
-        print('Draw')
         display_text('Draw', 24, 560, 260)
         display_text('Car1  ' + tc1, 24, 525, 300, TEAL)
         display_text('Car2  ' + tc2, 24, 525, 320, GREEN)
@@ -206,7 +205,7 @@ def result_recording(win, t1, t2, first=' ', second=' '):
     file.write('Race result: ' + win + '\n')
     file.write('1 place: ' + t1 + ' - ' + first + '\n')
     file.write('2 place: ' + t2 + ' - ' + second + '\n')
-    file.write('----------\n')
+    file.write('#\n')
     file.close()
 
 
@@ -217,7 +216,8 @@ def start_screen():
     draw_car(850, 300, '2', GREEN)
     display_text('RACE 3', 36, 555, 50)
     display_text('Press SPACE - for start race', 22, 500, 110)
-    display_text('Press Q - for quit game', 22, 515, 140)
+    display_text('Press Q - for quit game', 22, 515, 130)
+    display_text('Press P - to view statistics', 22, 500, 150)
     display_text('Car 1 :', 22, 250, 150, TEAL)
     display_text('A - forward', 22, 250, 170, TEAL)
     display_text('D - back', 22, 250, 190, TEAL)
@@ -227,9 +227,42 @@ def start_screen():
     pygame.display.update()
 
 
+def statistics():
+    """This function displays race results
+    statistics on the start screen"""
+    total = 0
+    car1 = 0
+    car2 = 0
+    draw = 0
+    try:
+        with open('race3_result.txt', 'r') as file_handler:
+            for line in file_handler:
+                if '#' in line:
+                    total += 1
+                if 'Win_Car1' in line:
+                    car1 += 1
+                if 'Win_Car2' in line:
+                    car2 += 1
+                if 'Draw' in line:
+                    draw += 1
+    except IOError:
+        display_text('Sorry, statistics are not available...', 22, 475, 200)
+
+    display_text('Total Races: ', 24, 525, 240)
+    display_text(str(total), 24, 655, 240)
+    display_text('Win Car1: ', 24, 525, 265, TEAL)
+    display_text(str(car1), 24, 655, 265, TEAL)
+    display_text('Win Car2: ', 24, 525, 290, GREEN)
+    display_text(str(car2), 24, 655, 290, GREEN)
+    display_text('Draw: ', 24, 525, 315)
+    display_text(str(draw), 24, 655, 315)
+    pygame.display.update()
+    pygame.time.wait(2000)
+
+
 # Create window and load sound
 screen = pygame.display.set_mode(SCREEN_SIZE)
-pygame.display.set_caption('Race 3.0.1')
+pygame.display.set_caption('Race 3.0.2')
 pygame.mixer.music.load('sounds/menu.wav')
 pygame.mixer.music.play(-1)
 clock = pygame.time.Clock()
@@ -252,6 +285,8 @@ while not finish:
         pygame.mixer.music.load('sounds/menu.wav')
         pygame.mixer.music.play(-1)
         start_screen()
+    if keys[pygame.K_p]:
+        statistics()
     if keys[pygame.K_q]:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
