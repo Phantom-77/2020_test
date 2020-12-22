@@ -112,6 +112,7 @@ def draw_finish_flag(x, y):
 
 
 def race():
+    """This function starts the race"""
     c1 = []  # empty list for recording time car1
     c2 = []  # empty list for recording time car2
     x1 = x2 = 1050  # Start position
