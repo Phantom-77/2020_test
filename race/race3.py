@@ -138,6 +138,7 @@ def race():
             x1 -= randint(2, 5)
         elif keys1[pygame.K_d]:
             x1 += 5
+
         if keys1[pygame.K_LEFT]:
             x2 -= randint(2, 5)
         elif keys1[pygame.K_RIGHT]:
@@ -186,7 +187,7 @@ def result(time_car1, time_car2):
         display_text('1 place - Car2  ' + tc2, 24, 500, 300, GREEN)
         display_text('2 place - Car1  ' + tc1, 24, 500, 320, TEAL)
         pygame.display.update()
-        result_recording('Win Car2!', tc2, tc1, 'Car2', 'Car1')
+        result_recording('Win Car2', tc2, tc1, 'Car2', 'Car1')
     else:
         print('Draw')
         display_text('Draw', 24, 560, 260)
