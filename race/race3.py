@@ -230,10 +230,7 @@ def start_screen():
 def statistics():
     """This function displays race results
     statistics on the start screen"""
-    total = 0
-    car1 = 0
-    car2 = 0
-    draw = 0
+    total = car1 = car2 = draw = 0
     try:
         with open('race3_result.txt', 'r') as file_handler:
             for line in file_handler:
