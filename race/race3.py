@@ -12,6 +12,7 @@ FPS = 30
 SCREEN_SIZE = (1200, 400)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 TEAL = (0, 128, 128)
 GREEN = (0, 128, 0)
 
@@ -73,7 +74,7 @@ def draw_car(x, y, number, color=WHITE):
     # Headlights and stop signal
     pygame.draw.rect(screen, WHITE, (x - 30, y - 25, 10, 5))
     pygame.draw.rect(screen, BLACK, (x - 30, y - 25, 10, 5), 1)
-    pygame.draw.rect(screen, (255, 0, 0), (x + 120, y - 25, 10, 10))
+    pygame.draw.rect(screen, RED, (x + 120, y - 25, 10, 10))
     pygame.draw.rect(screen, BLACK, (x + 120, y - 25, 10, 10), 1)
     # Wheel left
     pygame.draw.circle(screen, (47, 79, 79), (x, y), 20, 8)
@@ -234,7 +235,7 @@ def statistics():
     try:
         with open('race3_result.txt', 'r') as file_handler:
             for line in file_handler:
-                if '#' in line:
+                if 'Race result' in line:
                     total += 1
                 if 'Win_Car1' in line:
                     car1 += 1
@@ -243,7 +244,7 @@ def statistics():
                 if 'Draw' in line:
                     draw += 1
     except IOError:
-        display_text('Sorry, statistics are not available...', 22, 475, 200)
+        display_text('Sorry, statistics are not available...', 22, 475, 200, RED)
 
     display_text('Total Races: ', 24, 525, 240)
     display_text(str(total), 24, 655, 240)
