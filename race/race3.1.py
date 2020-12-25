@@ -211,9 +211,9 @@ def result(time_car1, time_car2):
         pygame.display.update()
         result_recording('Win_Car2', tc2, tc1, 'Car2', 'Car1')
     else:
-        display_text('Draw', 24, xct-40, yct+60)
-        display_text('Car1  ' + tc1, 24, xct-75, yct+100, TEAL)
-        display_text('Car2  ' + tc2, 24, xct-75, yct+120, GREEN)
+        display_text('Draw', 24, xct-20, yct+60)
+        display_text('Car1  ' + tc1, 24, xct-60, yct+100, TEAL)
+        display_text('Car2  ' + tc2, 24, xct-60, yct+120, GREEN)
         pygame.display.update()
         result_recording('Draw', tc1, tc2)
 
