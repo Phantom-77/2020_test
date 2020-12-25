@@ -135,7 +135,7 @@ def race():
     c1 = []  # empty list for recording time car1
     c2 = []  # empty list for recording time car2
     x1 = x2 = SCREEN_WIDTH - 150  # Start position
-    pygame.mixer.music.load('sounds/sound2.wav')
+    pygame.mixer.music.load('sounds/sound.wav')
     pygame.mixer.music.play(-1)
     time_start = pygame.time.get_ticks()
     end = False
