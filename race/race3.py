@@ -9,8 +9,8 @@ pygame.init()
 pygame.mixer.init()
 
 FPS = 30
-SC_WIDTH = 1200
-SC_HEIGHT = 400
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 480
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -33,8 +33,8 @@ def countdown():
     """This function counts down on the screen and beeps"""
     pygame.mixer.music.stop()
     draw_racing_lines()
-    draw_car(SC_WIDTH - 150, yct-50, '1', TEAL)
-    draw_car(SC_WIDTH - 150, yct+100, '2', GREEN)
+    draw_car(SCREEN_WIDTH-150, yct-50, '1', TEAL)
+    draw_car(SCREEN_WIDTH-150, yct+100, '2', GREEN)
     pygame.display.update()
     pygame.mixer.music.load('sounds/start.wav')
     pygame.mixer.music.play()
@@ -103,10 +103,10 @@ def draw_car(x, y, number, color=WHITE):
 
 def draw_racing_lines():
     """This function draws lines START & FINISH"""
-    display_text('START', 36, SC_WIDTH - 180, 25)
+    display_text('START', 36, SCREEN_WIDTH - 180, 25)
     display_text('FINISH', 36, 90, 25)
-    pygame.draw.line(screen, WHITE, [SC_WIDTH - 190, 0], [SC_WIDTH - 190, SC_HEIGHT], 5)
-    for y in range(0, SC_HEIGHT, 20):
+    pygame.draw.line(screen, WHITE, [SCREEN_WIDTH-190, 0], [SCREEN_WIDTH-190, SCREEN_HEIGHT], 5)
+    for y in range(0, SCREEN_HEIGHT, 20):
         sq1 = pygame.Rect((185, y, 10, 10))
         sq2 = pygame.Rect((195, y + 10, 10, 10))
         pygame.draw.rect(screen, WHITE, sq1)
@@ -128,7 +128,7 @@ def race():
     """This function starts the race"""
     c1 = []  # empty list for recording time car1
     c2 = []  # empty list for recording time car2
-    x1 = x2 = SC_WIDTH - 150  # Start position
+    x1 = x2 = SCREEN_WIDTH - 150  # Start position
     pygame.mixer.music.load('sounds/sound2.wav')
     pygame.mixer.music.play(-1)
     time_start = pygame.time.get_ticks()
@@ -271,13 +271,13 @@ def statistics():
 
 
 # Create window and load sound
-screen = pygame.display.set_mode((SC_WIDTH, SC_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Race 3.0.3')
 pygame.mixer.music.load('sounds/menu.wav')
 pygame.mixer.music.play(-1)
 clock = pygame.time.Clock()
-xct = SC_WIDTH / 2
-yct = SC_HEIGHT / 2
+xct = SCREEN_WIDTH / 2
+yct = SCREEN_HEIGHT / 2
 
 # Main loop
 finish = False
@@ -288,6 +288,7 @@ while not finish:
         if event.type == pygame.QUIT:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
+            pygame.quit()
             sys.exit()
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
