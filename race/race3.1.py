@@ -1,14 +1,14 @@
 # This is the "Race 3.1.0" program, where 2 cars driven by two players
 import pygame
-# import os
 import sys
+import random
 import winsound
 from datetime import datetime
-# from random import randint
 
 FPS = 30
 WIDTH = 1280
 HEIGHT = 420
+
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -25,31 +25,6 @@ def convert_time(ticks):
     # hours = int((ticks/(1000*60*60)) % 24a)
     res = '{min:02d}:{sec:02d}.{mil:03d}'.format(min=minutes, sec=seconds, mil=millis)
     return res
-
-
-def countdown():
-    """This function counts down on the screen and beeps"""
-    pygame.mixer.music.stop()
-    bg_img = pygame.image.load('img/road.jpg').convert()
-    bg_img_rect = bg_img.get_rect(center=(xct, yct))
-    screen.blit(bg_img, bg_img_rect)
-    draw_racing_lines()
-    # draw_car(WIDTH-150, yct-50, '1', BLUE)
-    # draw_car(WIDTH-150, yct+100, '2', GREEN)
-    pygame.display.update()
-    pygame.mixer.music.load('sounds/start.wav')
-    pygame.mixer.music.play()
-    pygame.time.wait(2000)
-    score = ['3', '2', '1', 'GO!']
-    b = [500, 500, 500, 1000]
-    for n in range(len(score)):
-        display_text_center(score[n], 52)
-        pygame.display.update()
-        pygame.time.wait(500)
-        winsound.Beep(b[n], b[n])
-        bg_img = pygame.image.load('img/road_cr.jpg').convert()
-        bg_img_rect = bg_img.get_rect(center=(xct, yct))
-        screen.blit(bg_img, bg_img_rect)
 
 
 def display_text(content, f_size, x, y, color=WHITE):
@@ -85,104 +60,15 @@ def draw_racing_lines():
         pygame.draw.rect(screen, WHITE, sq2)
 
 
-def draw_finish_flag(x, y):
-    """This function draws Finish Flag 120x60,
-    (x,y) - flag center coordinates"""
-    pygame.draw.rect(screen, WHITE, (x - 60, y - 30, 30, 30))
-    pygame.draw.rect(screen, WHITE, (x - 30, y, 30, 30))
-    pygame.draw.rect(screen, WHITE, (x, y - 30, 30, 30))
-    pygame.draw.rect(screen, WHITE, (x + 30, y, 30, 30))
-    pygame.draw.rect(screen, WHITE, (x - 61, y - 31, 122, 62), 1)
-    pygame.display.update()
-
-
-def race():
-    """This function starts the race"""
-    # c1 = []  # empty list for recording time car1
-    # c2 = []  # empty list for recording time car2
-    # x1 = x2 = WIDTH - 150  # Start position
-    pygame.mixer.music.load('sounds/sound.wav')
-    pygame.mixer.music.play(-1)
-    # time_start = pygame.time.get_ticks()
-    end = False
-    while not end:
-        clock.tick(FPS)
-        for r in pygame.event.get():
-            if r.type == pygame.QUIT:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-                sys.exit()
-
-        # screen.fill(BLACK)
-        # Обновление
-        all_sprites.update()
-
-        # Рендеринг
-        bg_img = pygame.image.load('img/road.jpg').convert()
-        bg_img_rect = bg_img.get_rect(center=(xct, yct))
-        screen.blit(bg_img, bg_img_rect)
-        draw_racing_lines()
-        all_sprites.draw(screen)
-        # После отрисовки всего, переворачиваем экран
-        pygame.display.flip()
-
-
-def result(time_car1, time_car2):
-    """This function determines the winner of the race
-    by comparing the time Car1 and Car2"""
-    t1 = time_car1
-    t2 = time_car2
-    tc1 = convert_time(t1)
-    tc2 = convert_time(t2)
-    if t1 < t2:
-        display_text('Win Car 1', 24, xct-45, yct+60, BLUE)
-        display_text('1 place - Car1  ' + tc1, 24, xct-100, yct+100, BLUE)
-        display_text('2 place - Car2  ' + tc2, 24, xct-100, yct+120, GREEN)
-        pygame.display.update()
-        result_recording('Win_Car1', tc1, tc2, 'Car1', 'Car2')
-    elif t1 > t2:
-        display_text('Win Car 2', 24, xct-45, yct+60, GREEN)
-        display_text('1 place - Car2  ' + tc2, 24, xct-100, yct+100, GREEN)
-        display_text('2 place - Car1  ' + tc1, 24, xct-100, yct+120, BLUE)
-        pygame.display.update()
-        result_recording('Win_Car2', tc2, tc1, 'Car2', 'Car1')
-    else:
-        display_text('Draw', 24, xct-20, yct+60)
-        display_text('Car1  ' + tc1, 24, xct-60, yct+100, BLUE)
-        display_text('Car2  ' + tc2, 24, xct-60, yct+120, GREEN)
-        pygame.display.update()
-        result_recording('Draw', tc1, tc2)
-
-
-def result_recording(win, t1, t2, first=' ', second=' '):
-    """This function writes the race result
-    to a file race3_result.txt"""
-    date = datetime.now()
-    file = open('race3_result.txt', 'a', -1, 'utf-8')
-    file.write(str(date) + '\n')
-    file.write('Race result: ' + win + '\n')
-    file.write('1 place: ' + t1 + ' - ' + first + '\n')
-    file.write('2 place: ' + t2 + ' - ' + second + '\n')
-    file.write('#\n')
-    file.close()
-
-
 def start_screen():
     """This function shows on-screen help in control"""
-    screen.fill(BLACK)
-    bg_img = pygame.image.load('img/menu.jpg').convert()
-    bg_img_rect = bg_img.get_rect(center=(xct, yct))
-    screen.blit(bg_img, bg_img_rect)
-    display_text_center('RACE 3', 54, 0, -180)
-    display_text_center('Press SPACE - for start race', 22, 0, -140)
-    display_text_center('Press Q - for quit game', 22, 0, -120)
-    display_text_center('Press P - to view statistics', 22, 0, -100)
-    display_text('Car 1 :', 22, xct-350, yct-110, BLUE)
-    display_text('A - forward', 22, xct-350, yct-90, BLUE)
-    display_text('D - back', 22, xct-350, yct-70, BLUE)
-    display_text('Car 2 :', 22, xct+300, yct-110, GREEN)
-    display_text('Left - forward', 22, xct+300, yct-90, GREEN)
-    display_text('Right - back', 22, xct+300, yct-70, GREEN)
+    backdrop = pygame.image.load('img/menu.jpg').convert()
+    backdrop_rect = backdrop.get_rect(center=(xct, yct))
+    screen.blit(backdrop, backdrop_rect)
+    display_text_center('RACE 3', 54, 0, -160, BLACK)
+    display_text_center('SPACE - start race', 22, 0, -120, BLACK)
+    display_text_center('Q - quit', 22, 0, -100, BLACK)
+    display_text_center('P - statistics;  H - help in the controls cars', 22, 0, +180)
     pygame.display.update()
 
 
@@ -203,19 +89,181 @@ def statistics():
                     draw += 1
     except IOError:
         display_text_center('Sorry, statistics are not available...', 22, 0, 0, RED)
-    bg_img = pygame.image.load('img/menu_s.jpg').convert()
-    bg_img_rect = bg_img.get_rect(center=(xct, yct+90))
-    screen.blit(bg_img, bg_img_rect)
+    shield = pygame.image.load('img/menu_s.png')
+    shield_rect = shield.get_rect(center=(xct, yct+90))
+    screen.blit(shield, shield_rect)
     display_text('Total Races: ', 22, xct-70, yct+80, BLACK)
     display_text(str(total), 22, xct+55, yct+80, BLACK)
-    display_text('Win Car1: ', 22, xct-70, yct+100, BLUE)
-    display_text(str(c1), 22, xct+55, yct+100, BLUE)
-    display_text('Win Car2: ', 22, xct-70, yct+120, GREEN)
-    display_text(str(c2), 22, xct+55, yct+120, GREEN)
+    display_text('Win Car1: ', 22, xct-70, yct+100, BLACK)
+    display_text(str(c1), 22, xct+55, yct+100, BLACK)
+    display_text('Win Car2: ', 22, xct-70, yct+120, BLACK)
+    display_text(str(c2), 22, xct+55, yct+120, BLACK)
     display_text('Draw: ', 22, xct-70, yct+140, BLACK)
     display_text(str(draw), 22, xct+55, yct+140, BLACK)
     pygame.display.update()
     pygame.time.wait(2000)
+
+
+def help_control():
+    shield = pygame.image.load('img/shield1.png')
+    shield_rect = shield.get_rect(center=(xct - 350, yct))
+    screen.blit(shield, shield_rect)
+    shield = pygame.image.load('img/shield2.png')
+    shield_rect = shield.get_rect(center=(xct + 350, yct))
+    screen.blit(shield, shield_rect)
+    pygame.display.update()
+    pygame.time.wait(2000)
+
+
+def countdown():
+    """This function counts down on the screen and beeps"""
+    pygame.mixer.music.stop()
+    background = pygame.image.load('img/road.jpg').convert()
+    background_rect = background.get_rect(center=(xct, yct))
+    screen.blit(background, background_rect)
+    draw_racing_lines()
+    car1.rect.right = car2.rect.right = WIDTH
+    all_sprites.draw(screen)
+    pygame.display.update()
+    pygame.mixer.music.load('sounds/start.wav')
+    pygame.mixer.music.play()
+    pygame.time.wait(2000)
+    score = ['3', '2', '1', 'GO!']
+    b = [500, 500, 500, 1000]
+    for n in range(len(score)):
+        display_text_center(score[n], 52)
+        pygame.display.update()
+        pygame.time.wait(500)
+        winsound.Beep(b[n], b[n])
+        field = pygame.image.load('img/road_cr.jpg').convert()
+        field_rect = field.get_rect(center=(xct, yct))
+        screen.blit(field, field_rect)
+
+
+def race():
+    """This function starts the race"""
+    c1 = []  # empty list for recording time car1
+    c2 = []  # empty list for recording time car2
+    pygame.mixer.music.load('sounds/sound.wav')
+    pygame.mixer.music.play(-1)
+    time_start = pygame.time.get_ticks()
+    end = False
+    while not end:
+        clock.tick(FPS)
+        for r in pygame.event.get():
+            if r.type == pygame.QUIT:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
+                sys.exit()
+
+        # Обновление
+        all_sprites.update()
+
+        # Рендеринг
+        background = pygame.image.load('img/road.jpg').convert()
+        background_rect = background.get_rect(center=(xct, yct))
+        screen.blit(background, background_rect)
+        display_text_center('Press R - for quit race', 22, 0, 180)
+        draw_racing_lines()
+        all_sprites.draw(screen)
+
+        car1.speed_x = car2.speed_x = 0
+        car1.speed_y = car2.speed_y = 0
+
+        key_state = pygame.key.get_pressed()
+        if key_state[pygame.K_r]:
+            end = True
+
+        if key_state[pygame.K_a]:
+            car1.speed_x = -5
+        if key_state[pygame.K_d]:
+            car1.speed_x = 5
+        if key_state[pygame.K_w]:
+            car1.speed_y = -3
+        if key_state[pygame.K_s]:
+            car1.speed_y = 3
+        car1.rect.x += car1.speed_x
+        car1.rect.y += car1.speed_y
+
+        if key_state[pygame.K_LEFT]:
+            car2.speed_x = -5
+        if key_state[pygame.K_RIGHT]:
+            car2.speed_x = 5
+        if key_state[pygame.K_UP]:
+            car2.speed_y = -3
+        if key_state[pygame.K_DOWN]:
+            car2.speed_y = 3
+        car2.rect.x += car2.speed_x
+        car2.rect.y += car2.speed_y
+
+        if car1.rect.left <= 50:
+            time_car1 = pygame.time.get_ticks() - time_start
+            c1.append(time_car1)
+            sp1 = len(c1)
+            if sp1 >= 2:
+                del c1[1]
+            flag = pygame.image.load('img/finish_flag.png')
+            flag_rect = flag.get_rect(center=(xct, yct))
+            screen.blit(flag, flag_rect)
+
+        if car2.rect.left <= 50:
+            time_car2 = pygame.time.get_ticks() - time_start
+            c2.append(time_car2)
+            sp2 = len(c2)
+            if sp2 >= 2:
+                del c2[1]
+            flag = pygame.image.load('img/finish_flag.png')
+            flag_rect = flag.get_rect(center=(xct, yct))
+            screen.blit(flag, flag_rect)
+
+        if car1.rect.left <= 10 and car2.rect.left <= 10:
+            result(c1[0], c2[0])
+            pygame.mixer.music.stop()
+            pygame.time.wait(3000)
+            end = True
+
+        # После отрисовки всего, переворачиваем экран
+        pygame.display.flip()
+
+
+def result(time_car1, time_car2):
+    """This function determines the winner of the race
+    by comparing the time Car1 and Car2"""
+    t1 = time_car1
+    t2 = time_car2
+    tc1 = convert_time(t1)
+    tc2 = convert_time(t2)
+    if t1 < t2:
+        display_text('Win Car 1', 24, xct-45, yct+60, BLUE)
+        display_text('1 place - Car1  ' + tc1, 24, xct-100, yct+100, BLUE)
+        display_text('2 place - Car2  ' + tc2, 24, xct-100, yct+120, GREEN)
+        pygame.display.update()
+        result_rec('Win_Car1', tc1, tc2, 'Car1', 'Car2')
+    elif t1 > t2:
+        display_text('Win Car 2', 24, xct-45, yct+60, GREEN)
+        display_text('1 place - Car2  ' + tc2, 24, xct-100, yct+100, GREEN)
+        display_text('2 place - Car1  ' + tc1, 24, xct-100, yct+120, BLUE)
+        pygame.display.update()
+        result_rec('Win_Car2', tc2, tc1, 'Car2', 'Car1')
+    else:
+        display_text('Draw', 24, xct-20, yct+60)
+        display_text('Car1  ' + tc1, 24, xct-60, yct+100, BLUE)
+        display_text('Car2  ' + tc2, 24, xct-60, yct+120, GREEN)
+        pygame.display.update()
+        result_rec('Draw', tc1, tc2)
+
+
+def result_rec(win, t1, t2, first=' ', second=' '):
+    """This function writes the race result
+    to a file race3_result.txt"""
+    date = datetime.now()
+    file = open('race3_result.txt', 'a', -1, 'utf-8')
+    file.write(str(date) + '\n')
+    file.write('Race result: ' + win + '\n')
+    file.write('1 place: ' + t1 + ' - ' + first + '\n')
+    file.write('2 place: ' + t2 + ' - ' + second + '\n')
+    file.write('#\n')
+    file.close()
 
 
 # Create window and load sound
@@ -226,41 +274,66 @@ pygame.display.set_caption('Race 3.1')
 clock = pygame.time.Clock()
 pygame.mixer.music.load('sounds/menu.wav')
 pygame.mixer.music.play(-1)
+
+car1_img = pygame.image.load('img/car1.png')
+car2_img = pygame.image.load('img/car2.png')
+barrier_img = pygame.image.load('img/barrier.png')
+
 xct = WIDTH / 2
 yct = HEIGHT / 2
 
-player_img = pygame.image.load('img/car1.jpg').convert()
-
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, name, image, pos=0):
         pygame.sprite.Sprite.__init__(self)
-        self.image = player_img
-        self.image.set_colorkey(WHITE)
+        self.name = name
+        self.image = image
         self.rect = self.image.get_rect()
         self.rect.right = WIDTH
-        self.rect.bottom = HEIGHT / 2 - 50
-        self.speedx = 0
+        self.rect.bottom = HEIGHT / 2 + pos
+        self.speed_x = 0
+        self.speed_y = 0
 
     def update(self):
-        self.speedx = 0
-        keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_a]:
-            self.speedx = -5
-        if keystate[pygame.K_d]:
-            self.speedx = 5
-        self.rect.x += self.speedx
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
+        if self.rect.top < 0:
+            self.rect.top = 0
+
+
+class Barrier(pygame.sprite.Sprite):
+    def __init__(self, image, position):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(150, 900)
+        self.rect.y = position
+        self.speed_y = random.randrange(-3, 3)
+
+    def update(self):
+        self.rect.y += self.speed_y
+        if self.rect.bottom > HEIGHT + 80 or self.rect.top < -80:
+            self.rect.x = random.randrange(150, 900)
+            self.speed_y = random.randrange(-3, 3)
 
 
 all_sprites = pygame.sprite.Group()
-car1 = Player()
-car2 = Player()
-all_sprites.add(car1)
-all_sprites.add(car2)
+barriers = pygame.sprite.Group()
+car1 = Player('Car1', car1_img, -50)
+car2 = Player('Car2', car2_img, +125)
+all_sprites.add(car1, car2)
+for i in range(4):
+    let = Barrier(barrier_img, -50)
+    all_sprites.add(let)
+    barriers.add(let)
+for i in range(4):
+    let = Barrier(barrier_img, 470)
+    all_sprites.add(let)
+    barriers.add(let)
 
 # Main loop
 finish = False
@@ -275,14 +348,17 @@ while not finish:
             sys.exit()
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
-        screen.fill(BLACK)
         countdown()
         race()
+        car1.rect.bottom = HEIGHT / 2 - 50
+        car2.rect.bottom = HEIGHT / 2 + 125
         pygame.mixer.music.load('sounds/menu.wav')
         pygame.mixer.music.play(-1)
         start_screen()
     if keys[pygame.K_p]:
         statistics()
+    if keys[pygame.K_h]:
+        help_control()
     if keys[pygame.K_q]:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
