@@ -30,8 +30,8 @@ def convert_time(ticks):
 def display_text(content, f_size, x, y, color=WHITE):
     """This function displays text:
     'content' - the text itself, f_size - the font size in pixels,
-    (x,y) - the text coordinates, (RGB) - the text color,
-    the default text color is white"""
+    x, y - the text coordinates, color - the text color (rgb),
+    the default text color is WHITE"""
     ft = pygame.font.Font(None, f_size)
     text = ft.render(content, True, color)
     screen.blit(text, (int(x), int(y)))
@@ -41,7 +41,7 @@ def display_text_center(content, f_size, dx=0, dy=0, color=WHITE):
     """This function displays text on the center screen:
     'content' - the text itself, f_size - the font size in pixels,
     dx,dy - shift the coordinates of the text from the center,
-    (RGB) - the text color, the default text color is WHITE"""
+    color - the text color (rgb), the default text color is WHITE"""
     font = pygame.font.Font(None, f_size)
     text = font.render(content, True, color)
     text_rect = text.get_rect(center=(xct + dx, yct + dy))
@@ -49,7 +49,7 @@ def display_text_center(content, f_size, dx=0, dy=0, color=WHITE):
 
 
 def draw_racing_lines():
-    """This function draws lines START & FINISH"""
+    """This function draws lines START and FINISH"""
     display_text('START', 36, WIDTH - 180, 25)
     display_text('FINISH', 36, 90, 25)
     pygame.draw.line(screen, WHITE, [WIDTH-190, 0], [WIDTH-190, HEIGHT], 5)
@@ -61,7 +61,7 @@ def draw_racing_lines():
 
 
 def start_screen():
-    """This function shows on-screen help in control"""
+    """This function shows start screen game"""
     backdrop = pygame.image.load('img/menu.jpg').convert()
     backdrop_rect = backdrop.get_rect(center=(xct, yct))
     screen.blit(backdrop, backdrop_rect)
@@ -73,8 +73,7 @@ def start_screen():
 
 
 def statistics():
-    """This function displays race results
-    statistics on the start screen"""
+    """This function displays race results on the start screen"""
     total = c1 = c2 = draw = 0
     try:
         with open('race3_result.txt', 'r') as file_handler:
@@ -110,6 +109,7 @@ def statistics():
 
 
 def help_control():
+    """This function shows cars control keys on the start screen"""
     shield = pygame.image.load('img/shield1.png')
     shield_rect = shield.get_rect(center=(xct - 350, yct))
     screen.blit(shield, shield_rect)
