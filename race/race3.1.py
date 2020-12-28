@@ -2,12 +2,16 @@
 import pygame
 import sys
 import random
-import winsound
 from datetime import datetime
+
+pygame.init()
+pygame.mixer.init()
 
 FPS = 30
 WIDTH = 1280
 HEIGHT = 420
+xct = WIDTH / 2
+yct = HEIGHT / 2
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -76,7 +80,7 @@ def statistics():
     """This function displays race results on the start screen"""
     total = c1 = c2 = draw = 0
     try:
-        with open('race3_result.txt', 'r') as file_handler:
+        with open('race3.1_result.txt', 'r') as file_handler:
             for line in file_handler:
                 if 'Race result' in line:
                     total += 1
@@ -132,16 +136,15 @@ def countdown():
     pygame.display.update()
     pygame.mixer.music.load('sounds/start.wav')
     pygame.mixer.music.play()
-    pygame.time.wait(2000)
+    pygame.time.wait(7000)
     score = ['img/3.png', 'img/2.png', 'img/1.png', 'img/go.png']
-    b = [500, 500, 500, 1000]
+    b = [1200, 1500, 1900, 1000]
     for n in range(len(score)):
         field = pygame.image.load(score[n])
         field_rect = field.get_rect(center=(xct, yct))
         screen.blit(field, field_rect)
         pygame.display.update()
-        pygame.time.wait(500)
-        winsound.Beep(b[n], b[n])
+        pygame.time.wait(b[n])
 
 
 def race():
@@ -175,10 +178,12 @@ def race():
 
         hits1 = pygame.sprite.spritecollide(car1, barriers, False)
         if hits1:
+            sound1.play()
             car1.speed_x = 3
             car1.rect.x += car1.speed_x
         hits2 = pygame.sprite.spritecollide(car2, barriers, False)
         if hits2:
+            sound1.play()
             car2.speed_x = 3
             car2.rect.x += car2.speed_x
 
@@ -278,32 +283,15 @@ def result(time_car1, time_car2):
 
 def result_rec(win, t1, t2, first=' ', second=' '):
     """This function writes the race result
-    to a file race3_result.txt"""
+    to a file race3.1_result.txt"""
     date = datetime.now()
-    file = open('race3_result.txt', 'a', -1, 'utf-8')
+    file = open('race3.1_result.txt', 'a', -1, 'utf-8')
     file.write(str(date) + '\n')
     file.write('Race result: ' + win + '\n')
     file.write('1 place: ' + t1 + ' - ' + first + '\n')
     file.write('2 place: ' + t2 + ' - ' + second + '\n')
     file.write('#\n')
     file.close()
-
-
-# Create window and load sound
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Race 3.1')
-clock = pygame.time.Clock()
-pygame.mixer.music.load('sounds/menu.wav')
-pygame.mixer.music.play(-1)
-
-car1_img = pygame.image.load('img/car1.png')
-car2_img = pygame.image.load('img/car2.png')
-barrier_img = pygame.image.load('img/barrier.png')
-
-xct = WIDTH / 2
-yct = HEIGHT / 2
 
 
 class Player(pygame.sprite.Sprite):
@@ -344,6 +332,19 @@ class Barrier(pygame.sprite.Sprite):
             self.rect.y = random.choice([-50, 420])
             self.speed_y = random.randrange(-3, 4)
 
+
+# Create window, load music and sounds
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('Race 3.1')
+clock = pygame.time.Clock()
+pygame.mixer.music.load('sounds/menu.wav')
+pygame.mixer.music.play(-1)
+
+sound1 = pygame.mixer.Sound('sounds/pf-f-f.wav')
+
+car1_img = pygame.image.load('img/car1.png')
+car2_img = pygame.image.load('img/car2.png')
+barrier_img = pygame.image.load('img/barrier.png')
 
 all_sprites = pygame.sprite.Group()
 barriers = pygame.sprite.Group()
