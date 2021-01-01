@@ -21,8 +21,10 @@ GREEN = (0, 128, 0)
 
 
 def convert_time(ticks):
-    """This function converts the received
-    milliseconds to time format MM:SS.mmm"""
+    """
+    This function converts the received
+    milliseconds to time format MM:SS.mmm
+    """
     millis = int(ticks % 1000)
     seconds = int((ticks/1000) % 60)
     minutes = int(ticks/(1000*60)) % 60
@@ -32,20 +34,24 @@ def convert_time(ticks):
 
 
 def display_text(content, f_size, x, y, color=WHITE):
-    """This function displays text:
+    """
+    This function displays text:
     'content' - the text itself, f_size - the font size in pixels,
     x, y - the text coordinates, color - the text color (rgb),
-    the default text color is WHITE"""
+    the default text color is WHITE
+    """
     ft = pygame.font.Font(None, f_size)
     text = ft.render(content, True, color)
     screen.blit(text, (int(x), int(y)))
 
 
 def display_text_center(content, f_size, dx=0, dy=0, color=WHITE):
-    """This function displays text on the center screen:
+    """
+    This function displays text on the center screen:
     'content' - the text itself, f_size - the font size in pixels,
     dx,dy - shift the coordinates of the text from the center,
-    color - the text color (rgb), the default text color is WHITE"""
+    color - the text color (rgb), the default text color is WHITE
+    """
     font = pygame.font.Font(None, f_size)
     text = font.render(content, True, color)
     text_rect = text.get_rect(center=(xct + dx, yct + dy))
@@ -53,7 +59,9 @@ def display_text_center(content, f_size, dx=0, dy=0, color=WHITE):
 
 
 def draw_racing_lines():
-    """This function draws lines START and FINISH"""
+    """
+    This function draws lines START and FINISH
+    """
     display_text('START', 36, WIDTH - 180, 25)
     display_text('FINISH', 36, 90, 25)
     pygame.draw.line(screen, WHITE, [WIDTH-190, 0], [WIDTH-190, HEIGHT], 5)
@@ -65,7 +73,9 @@ def draw_racing_lines():
 
 
 def start_screen():
-    """This function shows start screen game"""
+    """
+    This function shows start screen game
+    """
     backdrop = pygame.image.load('img/menu.jpg').convert()
     backdrop_rect = backdrop.get_rect(center=(xct, yct))
     screen.blit(backdrop, backdrop_rect)
@@ -77,7 +87,9 @@ def start_screen():
 
 
 def statistics():
-    """This function displays race results on the start screen"""
+    """
+    This function displays race results on the start screen
+    """
     total = c1 = c2 = draw = 0
     try:
         with open('race3.1_result.txt', 'r') as file_handler:
@@ -113,7 +125,9 @@ def statistics():
 
 
 def help_control():
-    """This function shows cars control keys on the start screen"""
+    """
+    This function shows cars control keys on the start screen
+    """
     shield = pygame.image.load('img/shield1.png')
     shield_rect = shield.get_rect(center=(xct - 350, yct))
     screen.blit(shield, shield_rect)
@@ -125,7 +139,9 @@ def help_control():
 
 
 def countdown():
-    """This function counts down on the screen and beeps"""
+    """
+    This function counts down on the screen and beeps
+    """
     pygame.mixer.music.stop()
     background = pygame.image.load('img/road.jpg').convert()
     background_rect = background.get_rect(center=(xct, yct))
@@ -136,9 +152,9 @@ def countdown():
     pygame.display.update()
     pygame.mixer.music.load('sounds/start.wav')
     pygame.mixer.music.play()
-    pygame.time.wait(7000)
+    pygame.time.wait(6500)
     score = ['img/3.png', 'img/2.png', 'img/1.png', 'img/go.png']
-    b = [1200, 1500, 1900, 1000]
+    b = [1700, 1500, 1900, 1000]
     for n in range(len(score)):
         field = pygame.image.load(score[n])
         field_rect = field.get_rect(center=(xct, yct))
@@ -148,7 +164,9 @@ def countdown():
 
 
 def race():
-    """This function starts the race"""
+    """
+    This function starts the race
+    """
     c1 = []
     c2 = []
     pygame.mixer.music.load('sounds/sound.wav')
@@ -235,8 +253,6 @@ def race():
 
         if car1.rect.left <= 10 and car2.rect.left <= 10:
             result(c1[0], c2[0])
-            pygame.mixer.music.stop()
-            pygame.time.wait(3000)
             end = True
 
         all_sprites.draw(screen)
@@ -244,8 +260,10 @@ def race():
 
 
 def result(time_car1, time_car2):
-    """This function determines the winner of the race
-    by comparing the time Car1 and Car2"""
+    """
+    This function determines the winner of the race
+    by comparing the time Car1 and Car2
+    """
     t1 = time_car1
     t2 = time_car2
     tc1 = convert_time(t1)
@@ -254,6 +272,8 @@ def result(time_car1, time_car2):
     background = pygame.image.load('img/road1.jpg').convert()
     background_rect = background.get_rect(center=(xct, yct))
     screen.blit(background, background_rect)
+    pygame.mixer.music.load('sounds/win.wav')
+    pygame.mixer.music.play(-1)
 
     if t1 < t2:
         shield = pygame.image.load('img/win1.png')
@@ -279,11 +299,14 @@ def result(time_car1, time_car2):
         display_text('Car2  ' + tc2, 24, xct-60, yct+120, GREEN)
         pygame.display.update()
         result_rec('Draw', tc1, tc2)
+    pygame.time.wait(4500)
 
 
 def result_rec(win, t1, t2, first=' ', second=' '):
-    """This function writes the race result
-    to a file race3.1_result.txt"""
+    """
+    This function writes the race result
+    to a file race3.1_result.txt
+    """
     date = datetime.now()
     file = open('race3.1_result.txt', 'a', -1, 'utf-8')
     file.write(str(date) + '\n')
