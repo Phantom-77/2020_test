@@ -363,12 +363,15 @@ clock = pygame.time.Clock()
 pygame.mixer.music.load('sounds/menu.wav')
 pygame.mixer.music.play(-1)
 
+# Sounds
 sound1 = pygame.mixer.Sound('sounds/pf-f-f.wav')
 
+# Images
 car1_img = pygame.image.load('img/car1.png')
 car2_img = pygame.image.load('img/car2.png')
 barrier_img = pygame.image.load('img/barrier.png')
 
+# Sprites
 all_sprites = pygame.sprite.Group()
 barriers = pygame.sprite.Group()
 car1 = Player('Car1', car1_img, -50)
@@ -390,19 +393,23 @@ while not finish:
             pygame.mixer.music.unload()
             pygame.quit()
             sys.exit()
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
         countdown()
         race()
-        car1.rect.bottom = HEIGHT / 2 - 50
-        car2.rect.bottom = HEIGHT / 2 + 125
+        car1.rect.bottom = yct - 50
+        car2.rect.bottom = yct + 125
         pygame.mixer.music.load('sounds/menu.wav')
         pygame.mixer.music.play(-1)
         start_screen()
+
     if keys[pygame.K_p]:
         statistics()
+
     if keys[pygame.K_h]:
         help_control()
+
     if keys[pygame.K_q]:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
