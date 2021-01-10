@@ -20,8 +20,10 @@ GREEN = (0, 128, 0)
 
 def convert_time(ticks):
     """
-    This function converts the received
-    milliseconds to time format MM:SS.mmm
+    This function converts the received milliseconds to time format
+
+    :param ticks: milliseconds
+    :return: time in format MM:SS.mmm
     """
     millis = int(ticks % 1000)
     seconds = int((ticks/1000) % 60)
@@ -33,10 +35,14 @@ def convert_time(ticks):
 
 def display_text(content, f_size, x, y, color=WHITE):
     """
-    This function displays text:
-    'content' - the text itself, f_size - the font size in pixels,
-    x, y - the text coordinates, color - the text color (rgb),
-    the default text color is WHITE
+    This function displays text at specified coordinates
+
+    :param content: the text itself
+    :param f_size: the font size in pixels
+    :param x: coordinate
+    :param y: coordinate
+    :param color: the text color (RGB), default is WHITE
+    :return:
     """
     ft = pygame.font.Font(None, f_size)
     text = ft.render(content, True, color)
@@ -45,10 +51,15 @@ def display_text(content, f_size, x, y, color=WHITE):
 
 def display_text_center(content, f_size, dx=0, dy=0, color=WHITE):
     """
-    This function displays text on the center screen:
-    'content' - the text itself, f_size - the font size in pixels,
-    dx,dy - shift the coordinates of the text from the center,
-    color - the text color (rgb), the default text color is WHITE
+    This function displays the center of the text
+    in the center of the screen
+
+    :param content: the text itself
+    :param f_size: the font size in pixels
+    :param dx: shift text by X relative to the middle of the screen
+    :param dy: shift text by Y relative to the middle of the screen
+    :param color: the text color (RGB), default is WHITE
+    :return:
     """
     font = pygame.font.Font(None, f_size)
     text = font.render(content, True, color)
@@ -256,8 +267,12 @@ def race():
 
 def result(time_car1, time_car2):
     """
-    This function determines the winner of the race
-    by comparing the time Car1 and Car2
+    This function determines the winner of the race by comparing
+    the time Car1 and Car2 and displays the race result
+
+    :param time_car1: car time # 1
+    :param time_car2: car time # 2
+    :return:
     """
     t1 = time_car1
     t2 = time_car2
@@ -297,10 +312,16 @@ def result(time_car1, time_car2):
     pygame.time.wait(4500)
 
 
-def result_rec(win, t1, t2, first=' ', second=' '):
+def result_rec(win: str, t1, t2, first=' ', second=' '):
     """
-    This function writes the race result
-    to a file race3.1_result.txt
+    This function writes the race result to a file race3.1_result.txt
+
+    :param win: race result
+    :param t1: time of the car finishing first
+    :param t2: time of the car finishing second
+    :param first: name of the car finishing first
+    :param second: name of the car finishing second
+    :return:
     """
     date = datetime.now()
     file = open('race3.1_result.txt', 'a', -1, 'utf-8')
